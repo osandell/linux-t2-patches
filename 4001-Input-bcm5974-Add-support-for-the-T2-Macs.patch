@@ -1,14 +1,14 @@
-From 327e6e1d0f6e8db68c124dff4d6a326b381ccedb Mon Sep 17 00:00:00 2001
-From: Aun-Ali Zaidi <admin@kodeit.net>
-Date: Wed, 23 Mar 2022 17:12:21 +0530
+From dace2082c6725e008792ffc552b2fc06d07445dc Mon Sep 17 00:00:00 2001
+From: Olof Sandell <83674246+osandell@users.noreply.github.com>
+Date: Wed, 2 Aug 2023 02:20:22 +0200
 Subject: [PATCH] Input: bcm5974 - Add support for the T2 Macs
 
 ---
- drivers/input/mouse/bcm5974.c | 138 ++++++++++++++++++++++++++++++++++
- 1 file changed, 138 insertions(+)
+ drivers/input/mouse/bcm5974.c | 145 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 145 insertions(+)
 
 diff --git a/drivers/input/mouse/bcm5974.c b/drivers/input/mouse/bcm5974.c
-index 59a14505b..88f17f21a 100644
+index ca150618d32f..4ad0f76036c5 100644
 --- a/drivers/input/mouse/bcm5974.c
 +++ b/drivers/input/mouse/bcm5974.c
 @@ -83,6 +83,24 @@
@@ -170,6 +170,20 @@ index 59a14505b..88f17f21a 100644
  	{}
  };
  
+@@ -566,6 +704,13 @@ static void report_finger_data(struct input_dev *input, int slot,
+ 			       const struct tp_finger *f)
+ {
+ 	input_mt_slot(input, slot);
++
++	// Disable touchpad functionality if near left 
++	// or right edge to avoid accidental presses while typing.
++	if (pos->x < -6000 || pos->x > 6500) {
++		return;
++	}
++
+ 	input_mt_report_slot_state(input, MT_TOOL_FINGER, true);
+ 
+ 	input_report_abs(input, ABS_MT_TOUCH_MAJOR,
 -- 
-2.25.1
+2.41.0
 
